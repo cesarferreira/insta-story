@@ -33,6 +33,7 @@ import kotlinx.android.synthetic.main.progress_story_view.view.leftLay
 import kotlinx.android.synthetic.main.progress_story_view.view.linearProgressIndicatorLay
 import kotlinx.android.synthetic.main.progress_story_view.view.loaderProgressbar
 import kotlinx.android.synthetic.main.progress_story_view.view.rightLay
+import kotlinx.android.synthetic.main.video_player.view.videoPlayer
 
 @SuppressLint("ViewConstructor")
 class InstaStory(
@@ -67,7 +68,9 @@ class InstaStory(
                 textView
             }
             is StoryItem.RemoteImage -> ImageView(context)
-            is StoryItem.Video -> SurfaceView(context)
+            is StoryItem.Video -> LayoutInflater.from(
+                context
+            ).inflate(R.layout.video_player, null).videoPlayer
 
             is StoryItem.LocalImage -> {
                 ImageView(context).apply {
