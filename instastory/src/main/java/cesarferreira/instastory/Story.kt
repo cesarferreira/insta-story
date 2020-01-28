@@ -49,13 +49,15 @@ class Story(
     init {
         initView()
         init()
+        storyItems.map { it.view = it.fillView(this.context) }
     }
 
-    private fun StoryItem.mapStoryItemToView(): StoryItem {
-        val mappedView = when (this) {
+    private fun StoryItem.fillView(context: Context): View {
+
+        return when (this) {
             is StoryItem.Text -> {
                 val textView = TextView(context)
-                textView.text = this.text
+                textView.text = text
                 textView.textSize = 20f.toPixel(context).toFloat()
                 textView.gravity = Gravity.CENTER
                 textView.setTextColor(Color.parseColor("#ffffff"))
@@ -70,18 +72,16 @@ class Story(
                     setImageDrawable(
                         ContextCompat.getDrawable(
                             context,
-                            this@mapStoryItemToView.drawable
+                            this@fillView.drawable
                         )
                     )
                 }
             }
-            is StoryItem.CustomView -> this.customView
+            is StoryItem.CustomView -> customView
             is StoryItem.CustomLayout -> LayoutInflater.from(
                 context
-            ).inflate(this.layout, null)
+            ).inflate(layout, null)
         }
-
-        return this.apply { view = mappedView }
     }
 
     private fun init() {
@@ -184,13 +184,10 @@ class Story(
             }
         }
 
-        currentView =
-            storyItems[currentlyShownIndex].mapStoryItemToView() // storyViewList[currentlyShownIndex].view
+        currentView = storyItems[currentlyShownIndex]
 
         libSliderViewList[currentlyShownIndex].startProgress()
 
-        // TODO this is useless
-        // storyCallback.onNextCalled(currentView.view, this, currentlyShownIndex)
 
         when (currentView) {
             is StoryItem.RemoteImage -> {
@@ -205,8 +202,7 @@ class Story(
                 )
             }
         }
-        //TODO interceptar os VIDEOS / REMOTE IMAGES
-        // ou posso simplesmente deixa-lo ir buscar ao outro lado??
+        storyCallback.onNextCalled(currentView, currentlyShownIndex)
 
         view.currentlyDisplayedView.removeAllViews()
         view.currentlyDisplayedView.addView(currentView.view)
@@ -229,15 +225,9 @@ class Story(
             .into(remoteImage.view as ImageView, object : Callback {
                 override fun onSuccess() {
                     resume()
-                    // Toast.makeText(this@MainActivity, "Image loaded from the internet", Toast.LENGTH_LONG).show()
                 }
 
                 override fun onError(e: Exception?) {
-                    // Toast.makeText(
-                    //     this@MainActivity,
-                    //     e?.localizedMessage,
-                    //     Toast.LENGTH_LONG
-                    // ).show()
                     e?.printStackTrace()
                 }
             })
@@ -262,13 +252,7 @@ class Story(
         videoView.setOnInfoListener(object : MediaPlayer.OnInfoListener {
             override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    // Here the video starts
-                    editDurationAndResume(index, (videoView.duration) / 1000)
-                    // Toast.makeText(
-                    //     this@MainActivity,
-                    //     "Video loaded from the internet",
-                    //     Toast.LENGTH_LONG
-                    // ).show()
+                    editDurationAndResume(index, videoView.duration / 1000)
                     return true
                 }
                 return false

@@ -10,12 +10,12 @@
     val listOfViews = listOf(
        StoryItem.Text("Hello", 5),
        StoryItem.RemoteImage(imageUrl, 5),
-       StoryItem.Video(videoUrl, 5),
+       StoryItem.Video(videoUrl),
        StoryItem.LocalImage(R.drawable.some_drawable, 5),
        StoryItem.CustomLayout(R.layout.custom_view, 5)
     )
 
-    Story(applicationContext, listOfViews, container, object : StoryCallback { ... } ).start
+    Story(context, listOfViews, container, object : StoryCallback { ... } ).start()
 ```
 
 ## Install

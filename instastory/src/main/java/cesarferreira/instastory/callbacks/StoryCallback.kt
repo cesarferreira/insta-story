@@ -1,9 +1,8 @@
 package cesarferreira.instastory.callbacks
 
-import android.view.View
-import cesarferreira.instastory.Story
+import cesarferreira.instastory.StoryItem
 
 interface StoryCallback {
-    fun onNextCalled(view: View, story: Story, index: Int)
+    fun onNextCalled(storyItem: StoryItem, index: Int)
     fun done()
 }
