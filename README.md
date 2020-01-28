@@ -5,7 +5,7 @@
 
 ## Usage
 
-	```kotlin
+```kotlin
     val listOfViews = listOf(
        StoryItem.Text("Hello", 5),
        StoryItem.RemoteImage(imageUrl, 5),
