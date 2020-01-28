@@ -1,4 +1,4 @@
-# Instastory
+# Insta-story [![Build Status](https://travis-ci.org/cesarferreira/insta-story.svg?branch=master)](https://travis-ci.org/cesarferreira/insta-story) [ ![Download](https://api.bintray.com/packages/cesarferreira/maven/insta-story/images/download.svg) ](https://bintray.com/cesarferreira/maven/insta-story/_latestVersion)
 
 > Creates an instagram story like UI 
 
@@ -31,9 +31,15 @@ allprojects {
 
 ```groovy
 dependencies {
-  implementation 'com.github.cesarferreira:instastory:+'
+  implementation 'com.github.cesarferreira:insta-story:+'
 }
 ```
+
+---------------------
+
+
+Made with ♥ by [Cesar Ferreira](http://cesarferreira.com)
+
 
 ## Licence
 
