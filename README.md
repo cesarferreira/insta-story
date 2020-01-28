@@ -1,20 +1,19 @@
 # Insta-story [![](https://jitpack.io/v/cesarferreira/insta-story.svg)](https://jitpack.io/#cesarferreira/insta-story)
 
-
 > Creates an instagram story like UI 
 
 ## Usage
 
 ```kotlin
 val listOfViews = listOf(
-   StoryItem.Text("Hello", 5),
-   StoryItem.RemoteImage(imageUrl, 5),
-   StoryItem.Video(videoUrl),
-   StoryItem.LocalImage(R.drawable.some_drawable, 5),
-   StoryItem.CustomLayout(R.layout.custom_view, 5)
+    StoryItem.Text(text = "Hello", durationInSeconds = 5),
+    StoryItem.RemoteImage(imageUrl = imageUrl, durationInSeconds = 5),
+    StoryItem.Video(videoUrl = videoUrl),
+    StoryItem.LocalImage(R.drawable.some_image, durationInSeconds = 5),
+    StoryItem.CustomLayout(R.layout.custom_view, durationInSeconds = 5)
 )
 
-Story(context, listOfViews, container, object : StoryCallback { ... } ).start()
+InstaStory(context, listOfViews, container, object : StoryCallback { ... } ).start()
 ```
 
 ## Install

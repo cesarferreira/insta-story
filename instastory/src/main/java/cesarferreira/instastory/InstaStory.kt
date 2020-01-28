@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.progress_story_view.view.loaderProgressbar
 import kotlinx.android.synthetic.main.progress_story_view.view.rightLay
 
 @SuppressLint("ViewConstructor")
-class Story(
+class InstaStory(
     context: Context,
     private val passedInContainerView: ViewGroup,
     private val storyItems: List<StoryItem>,
