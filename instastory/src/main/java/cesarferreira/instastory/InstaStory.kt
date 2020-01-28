@@ -10,6 +10,7 @@ import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -22,6 +23,8 @@ import androidx.core.content.ContextCompat
 import cesarferreira.instastory.callbacks.ProgressTimeWatcher
 import cesarferreira.instastory.callbacks.StoryCallback
 import cesarferreira.instastory.utils.toPixel
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
@@ -53,7 +56,6 @@ class InstaStory(
     }
 
     private fun StoryItem.fillView(context: Context): View {
-
         return when (this) {
             is StoryItem.Text -> {
                 val textView = TextView(context)
@@ -65,7 +67,7 @@ class InstaStory(
                 textView
             }
             is StoryItem.RemoteImage -> ImageView(context)
-            is StoryItem.Video -> VideoView(context)
+            is StoryItem.Video -> SurfaceView(context)
 
             is StoryItem.LocalImage -> {
                 ImageView(context).apply {
