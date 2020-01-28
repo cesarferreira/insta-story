@@ -1,4 +1,5 @@
-# Insta-story [![Build Status](https://travis-ci.org/cesarferreira/insta-story.svg?branch=master)](https://travis-ci.org/cesarferreira/insta-story) [ ![Download](https://api.bintray.com/packages/cesarferreira/maven/insta-story/images/download.svg) ](https://bintray.com/cesarferreira/maven/insta-story/_latestVersion)
+# Insta-story [![Build Status](https://travis-ci.org/cesarferreira/insta-story.svg?branch=master)](https://travis-ci.org/cesarferreira/insta-story) [![](https://jitpack.io/v/cesarferreira/insta-story.svg)](https://jitpack.io/#cesarferreira/insta-story)
+
 
 > Creates an instagram story like UI 
 
