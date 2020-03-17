@@ -138,8 +138,10 @@ class InstaStory(
                 if (gestureDetector.onTouchEvent(event)) {
                     // single tap
                     if (v?.id == view.rightLay.id) {
+                        pausedState = false
                         next()
                     } else if (v?.id == view.leftLay.id) {
+                        pausedState = false
                         prev()
                     }
                     return true
