@@ -11,6 +11,8 @@ import kotlinx.android.synthetic.main.activity_main.container
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var story: InstaStory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             StoryItem.CustomLayout(R.layout.custom_view, durationInSeconds = 5)
         )
 
-        InstaStory(
+        story = InstaStory(
             applicationContext,
             container,
             listOfViews,
@@ -41,7 +43,23 @@ class MainActivity : AppCompatActivity() {
                 override fun done() {
                     Toast.makeText(this@MainActivity, "Finished!", Toast.LENGTH_LONG).show()
                 }
-            }).start()
+            })
+        story.start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        story.resume()
+    }
+
+    override fun onPause() {
+        story.pause(false)
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        story.release()
+        super.onDestroy()
     }
 }
 

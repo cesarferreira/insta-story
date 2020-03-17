@@ -3,7 +3,6 @@ package cesarferreira.instastory
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.media.MediaPlayer
 import android.net.Uri
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -15,13 +14,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.VideoView
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import cesarferreira.instastory.callbacks.ProgressTimeWatcher
 import cesarferreira.instastory.callbacks.StoryCallback
 import cesarferreira.instastory.utils.toPixel
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
@@ -45,6 +48,8 @@ class InstaStory(
     private lateinit var view: View
     private var pausedState: Boolean = false
     lateinit var gestureDetector: GestureDetector
+    private var exoPlayer: SimpleExoPlayer? = null
+    private var videoListener : Player.EventListener? = null
 
     init {
         initView()
@@ -65,8 +70,9 @@ class InstaStory(
                 textView
             }
             is StoryItem.RemoteImage -> ImageView(context)
-            is StoryItem.Video -> VideoView(context)
-
+            is StoryItem.Video -> LayoutInflater.from(
+                context
+            ).inflate(R.layout.video_player, null)
             is StoryItem.LocalImage -> {
                 ImageView(context).apply {
                     setImageDrawable(
@@ -199,7 +205,7 @@ class InstaStory(
                 loadRemoteImage((currentView as StoryItem.RemoteImage))
             }
             is StoryItem.Video -> {
-                pause(true)
+                pause(false)
                 playVideo(
                     currentlyShownIndex,
                     (currentView as StoryItem.Video)
@@ -245,23 +251,27 @@ class InstaStory(
         index: Int,
         videoStoryItem: StoryItem.Video
     ) {
-        val uri = Uri.parse(videoStoryItem.videoUrl)
-        val videoView = videoStoryItem.view as VideoView
-
-        videoView.setVideoURI(uri)
-
-        videoView.requestFocus()
-        videoView.start()
-
-        videoView.setOnInfoListener(object : MediaPlayer.OnInfoListener {
-            override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    editDurationAndResume(index, videoView.duration / 1000)
-                    return true
+        exoPlayer?.stop()
+        exoPlayer?.release()
+        exoPlayer = SimpleExoPlayer.Builder(context).build()
+        videoListener = object : Player.EventListener{
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                if (playWhenReady && playbackState == Player.STATE_READY) {
+                    editDurationAndResume(index, exoPlayer!!.duration.toInt() / 1000)
+                    exoPlayer?.removeListener(this)
                 }
-                return false
             }
-        })
+        }
+        exoPlayer?.addListener(videoListener as Player.EventListener)
+
+        (videoStoryItem.view as PlayerView).player = exoPlayer
+        exoPlayer?.playWhenReady = true
+        exoPlayer?.seekTo(0, 0)
+
+        val uri = Uri.parse(videoStoryItem.videoUrl)
+        val defaultHttpDataSourceFactory = DefaultHttpDataSourceFactory("exoplayer")
+        val mediaSource = ProgressiveMediaSource.Factory(defaultHttpDataSourceFactory).createMediaSource(uri)
+        exoPlayer?.prepare(mediaSource, true, false)
     }
 
     fun editDurationAndResume(index: Int, newDurationInSecons: Int) {
@@ -276,9 +286,10 @@ class InstaStory(
         if (storyItems.size == 1) {
             currentlyShownIndex = 0
         }
+        if (currentlyShownIndex == storyItems.size) return
         libSliderViewList[currentlyShownIndex].pauseProgress()
         if (storyItems[currentlyShownIndex] is StoryItem.Video) {
-            (storyItems[currentlyShownIndex].view as VideoView).pause()
+            exoPlayer?.playWhenReady = false
         }
     }
 
@@ -287,9 +298,10 @@ class InstaStory(
         if (storyItems.size == 1) {
             currentlyShownIndex = 0
         }
+        if (currentlyShownIndex == storyItems.size) return
         libSliderViewList[currentlyShownIndex].resumeProgress()
         if (storyItems[currentlyShownIndex] is StoryItem.Video) {
-            (storyItems[currentlyShownIndex].view as VideoView).start()
+            exoPlayer?.playWhenReady = true
         }
     }
 
@@ -332,6 +344,11 @@ class InstaStory(
         } finally {
             show()
         }
+    }
+
+    fun release(){
+        exoPlayer?.stop()
+        exoPlayer?.release()
     }
 
     private inner class SingleTapConfirm : SimpleOnGestureListener() {
