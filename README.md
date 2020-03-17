@@ -35,5 +35,10 @@ dependencies {
 
 ---------------------
 
-Made with ♥ by [Cesar Ferreira](http://cesarferreira.com)
+## Made with ♥ by
+
+[Cesar Ferreira](http://cesarferreira.com)
+
+[Alexandros Bentevis](https://github.com/alexandrosbentevis)
+
 
