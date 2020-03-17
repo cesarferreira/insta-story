@@ -185,7 +185,9 @@ class InstaStory(
                 libSliderViewList[i].cancelProgress()
             }
         }
-
+        if (storyItems.size == 1) {
+            currentlyShownIndex = 0
+        }
         currentView = storyItems[currentlyShownIndex]
 
         libSliderViewList[currentlyShownIndex].startProgress()
@@ -271,6 +273,9 @@ class InstaStory(
         if (withLoader) {
             view.loaderProgressbar.visibility = View.VISIBLE
         }
+        if (storyItems.size == 1) {
+            currentlyShownIndex = 0
+        }
         libSliderViewList[currentlyShownIndex].pauseProgress()
         if (storyItems[currentlyShownIndex] is StoryItem.Video) {
             (storyItems[currentlyShownIndex].view as VideoView).pause()
@@ -279,6 +284,9 @@ class InstaStory(
 
     fun resume() {
         view.loaderProgressbar.visibility = View.GONE
+        if (storyItems.size == 1) {
+            currentlyShownIndex = 0
+        }
         libSliderViewList[currentlyShownIndex].resumeProgress()
         if (storyItems[currentlyShownIndex] is StoryItem.Video) {
             (storyItems[currentlyShownIndex].view as VideoView).start()
